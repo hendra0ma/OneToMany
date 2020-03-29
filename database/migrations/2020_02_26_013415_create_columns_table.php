@@ -17,6 +17,7 @@ class CreateColumnsTable extends Migration
             $table->bigIncrements('id');
             $table->string('status');
             $table->string('user_id');
+            $table->string('deleted_at');
             $table->timestamps();
         });
     }

@@ -73,7 +73,7 @@
         </button>
       </div>
           <div class="modal-body">
-          <form action="home/kirimemail/"class="form-group">
+          <form action="home/kirimemail/"class="form-group"method="post">
                           <?php echo e(csrf_field()); ?>
 
               status : 

@@ -429,16 +429,16 @@
   'mail' => 
   array (
     'driver' => 'smtp',
-    'host' => 'smtp.sendgrid.net',
-    'port' => '465',
+    'host' => 'aspmx.l.google.com',
+    'port' => '25',
     'from' => 
     array (
       'address' => NULL,
-      'name' => 'hendra maulidan',
+      'name' => 'My Note',
     ),
     'encryption' => NULL,
-    'username' => 'apikey',
-    'password' => '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',
+    'username' => 'hendra0maulidan@gmail.com',
+    'password' => 'jancok123@@',
     'sendmail' => '/usr/sbin/sendmail -bs',
     'markdown' => 
     array (

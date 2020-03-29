@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
 use Illuminate\Support\DateFactory;
 use Carbon\CarbonImmutable;
-
+use App\Column;
+use App\Observers\ColumnObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,5 +34,6 @@ class AppServiceProvider extends ServiceProvider
         config(['app.locale' => 'id']);
         Carbon::setLocale('id');
         date_default_timezone_set('Asia/Jakarta');
+        Column::observe(ColumnObserver::class);
     }
 }

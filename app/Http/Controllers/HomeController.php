@@ -5,10 +5,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Task;
-use App\Tasks;
-use App\process;
 use App\Column;
 use App\EventCalendar;
+use Session;
 class HomeController extends Controller
 {
     /**
@@ -26,84 +25,88 @@ class HomeController extends Controller
     }
     public function index()
     {
-        $start = process::all()->where('user_id',Auth::user()->id)->where('status','Start');
-        $process = process::all()->where('user_id',Auth::user()->id)->where('status','process');
-        $forEmail = process::all()->where('user_id',Auth::user()->id);
-        $finish = process::all()->where('user_id',Auth::user()->id)->where('status','finish');
-        return view('home',compact('start','process','finish','forEmail'));
+        $custom = Column::where('user_id',Auth::user()->id)->orderBy('status','asc')->get();
+        
+        return view('custom',compact('custom','customSoft'));
+        
     }
-    public function customPage()
-    {
-        $custom = Column::all()->where('user_id',Auth::user()->id);
-        return view('custom',compact('custom'));
-    }
+
 
     //UNTUK CARD TASK
 
 
     public function newCard(Request $request)
     {
-        Column::insert([
+           Column::insert([
             'user_id' => Auth::user()->id,
            'status' => $request->input('cardName'),
            'created_at' => now()
         ]);
-        return redirect('/home/custom');
+        return back();
+    }
+    public function sendEmail(Request $request)
+    {
+        mail($request->sendTo,'Form '.Auth::user()->name,$request->task);
+        return back();
     }
     public function newTask(Request $request,$id)
     {
         Task::insert([
             'user_id' => Auth::user()->id,
-           'kegiatan' => $request->input('taskName'),
+           'title' => $request->input('taskName'),
            'column_id' => $id,
-           'updated_at' => Carbon::now()
+           'updated_at' => Carbon::now(),
+           'start' => date('Y:m:d H:i:m'),
+           'color'=>'#30d93e'
         ]);
-        
-
-        return redirect('/home/custom');
+        return back();
     }
     public function deleteCard($id)
     {
+        
+        $name = DB::table('columns')->where('id',$id)->get();
+        foreach ($name as $item) {
+            Session::flash('name',$item->id);
+            Session::flash('message','Return this card '.$item->status.' ?');
+        }
         Column::find($id)->delete();
-        return redirect('/home/custom');
+        return back();
     }
     public function change(Request $request,$id)
     {
         DB::table('tasks')->where('id',$id)->update(['column_id'=>$request->change]);
         return back();
     }
+    public function returnCard(Request $request,$id)
+    {
+        DB::table('columns')->where('id',$id)->update([
+            'deleted_at' => $request->return
+        ]);
+        return back();
+    }
 
     public function deleteCustomTask($id)
     {
+        Task::find($id)->update([
+            'column_id' => null
+        ]);
+
         Task::find($id)->delete();
         return back();
+    }
+    public function deleteAll()
+    {
+            DB::table('tasks')->where('user_id',Auth::user()->id)->delete();
+            return back();
     }
 
     //akhir dari Card Task
 
-
-
-    //Untuk PROCESS TASK
-
-    public function insertTask(Request $request)
-    {
-        process::insert([
-            'status' => 'Start',
-            'kegiatan' => $request->input('taskName'),
-            'user_id'=> Auth::user()->id,
-            'created_at' => Carbon::now(),
-            'title' => $request->input('taskName'),
-           'start'=> now(),
-           'color'=>'#35de62'
-           
-        ]);
-        return back();
-    }
+    //Untuk Date
     public function insertTaskCalendar(Request $request)
     {
-        $success = process::insert([
-            
-            'kegiatan' => $request->input('taskName'),
+        if ($request->ajax()) {
+        $success = Task::insert([
             'user_id'=> Auth::user()->id,
             'created_at' => Carbon::now(),
             'title' => $request->input('taskName'),
@@ -112,45 +115,13 @@ class HomeController extends Controller
            
         ]);
         return response()->json($success);
+        }
+        
     }
-
-    public function deleteTask($id)
-    {
-        process::find($id)->delete();
-        return redirect('/home');
-    }
-    public function process($id)
-    {
-        process::find($id)->update([
-            
-            'status'=> 'process',
-            'updated_at' => Carbon::now(),
-            'start'=> now(),
-            'color'=>'#32a852'
-           
-        ]);
-        return back();
-    }
-
-
-
-    public function finish($id)
-    {
-        process::find($id)->update([
-            'color'=>'#2fed2f',
-            'status'=>'finish',
-            'updated_at' => Carbon::now(),
-            'start'=> now(),
-           'end' => now(),
-           
-        ]);
-        return back();
-    }
-
     public function ChangeDate(Request $request)
     {
-        $process = process::where(array('id'=>$request->id))->update([
-            'start'=>$request->start
+        $process = Task::where(array('id'=>$request->id))->update([
+            'start'=>$request->start,            
         ]);
         return response()->json($process);
     }

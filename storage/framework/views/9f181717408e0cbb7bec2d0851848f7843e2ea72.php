@@ -10,33 +10,17 @@
 						<th>number</th>
 						<th>activity</th>
 						<th>created at</th>
+						<th><a href="/deleteAll"class="btn btn-danger">Delete All&nbsp;<i class="fas fa-trash"></i></a></th>
+							
 					</tr>
 				</thead>
 				<?php $i = 1; ?>
 				<?php $__currentLoopData = $history; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 				<tr>
 					<td><?php echo e($i++); ?></td>
-					<td><?php echo e($item->kegiatan); ?></td>
+					<td><?php echo e($item->title); ?></td>
 					<td><?php echo e($item->created_at); ?></td>
-					<td></td>
-				</tr>
-				<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-				<thead class="thead-secondary">
-				<tr><th colspan="4"class="text-center">Process Tasks</th></tr>
-				<tr>
-					<th>number</th>
-					<th>activity</th>
-					<th>created at</th>
-					<th>updated at</th>
-				</tr>
-				</thead>
-				<?php $a = 1; ?>
-				<?php $__currentLoopData = $process; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-				<tr>
-					<td><?php echo e($a++); ?></td>
-					<td><?php echo e($item->kegiatan); ?></td>
-					<td><?php echo e($item->created_at); ?></td>
-					<td><?php echo e($item->updated_at); ?></td>
+					<td><a class="btn btn-danger" href="/deleteHistory/<?php echo e($item->id); ?>"><i class="fas fa-trash"></i></a></td>
 				</tr>
 				<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 			</table>

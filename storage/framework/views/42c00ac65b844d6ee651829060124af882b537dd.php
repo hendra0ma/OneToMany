@@ -13,10 +13,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
 
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-<style type="text/css">
-  
-</style>
-
 </head>
 <body>
      <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
@@ -85,22 +81,6 @@
      <div class="container-fluid">
        
   <div id='wrap' class="py-3">
-
-    <div id='external-events'>
-      <h4>Events</h4><?php $i=1; ?>
-      <?php $__currentLoopData = $calendar; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cal): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-        <div class="row py-1">
-        <div class="col-md-3">
-      <div id='external-events-list'>
-        
-        <div class='fc-event'><?php echo e($i++); ?> . <?php echo e($cal->title); ?></div>
-        
-        </div>
-      </div>
-      </div>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>  
-      
-    </div>
 
     <div id='calendar'></div>
 
@@ -187,10 +167,10 @@
               calendar.fullCalendar('unselect');
             },
       eventDrop: function (event) {
-          change = $.fullCalendar.formatDate(event.start,"Y-MM-DD")+' '+('<?php echo e(date("H:i:s")); ?>')
+          changeStart = $.fullCalendar.formatDate(event.start,"Y-MM-DD")+' '+('<?php echo e(date("H:i:s")); ?>')
           $.ajax({
             url:'/home/ChangeDate',
-            data :'start='+change+'&id='+event.id,
+            data :'start='+changeStart+'&id='+event.id,
             type:'GET',
             success:function () {
               alert('success change date')
